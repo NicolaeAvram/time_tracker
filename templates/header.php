@@ -9,7 +9,7 @@
 <?php else:?>
     <a href="register.php">Register</a><br>
     <a href="login.php">Login</a><br>
-    <a href="#">Git</a>
+    
 <?php endif ?>    
 </nav>
 <hr>
