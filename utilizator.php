@@ -21,8 +21,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['submit'] )){
         'nume'=>['required'=>true, 'min'=>3, 'max'=>25],
         'prenume'=>['required'=>true, 'min'=>3, 'max'=>25],
         'username'=>['required'=>true, 'min'=>3, 'max'=>25, 'uppercase'=>true],
-        'parola'=>['required'=>true, 'min'=>8, 'max'=>60, 'uppercase'=>true, 'lowercase'=>true,'caracter_special'=>true, 'numar'=>true]        
-    ])){
+            ])){
         $id = $_POST['id'];
         $nume = $_POST['nume'];
         $prenume = $_POST['prenume'];
@@ -31,23 +30,22 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['submit'] )){
         $rol = $_POST['rol'];
         $status = $_POST['status'];
         $id_dep_utilizator = $_POST['departament'];
-       
+        //verificare parola
+        $query_parola = "SELECT parola FROM utilizatori WHERE id = '$id'";
+        $select_parola = mysqli_query($connection, $query_parola);
+        $utilizator = mysqli_fetch_assoc($select_parola);
+        $parola_db = $utilizator['parola'];    
         if(!empty($parola)){
-            $query_parola = "SELECT parola FROM utilizatori WHERE id = '$id'";
-            $select_parola = mysqli_query($connection, $query_parola);
-            $utilizator = mysqli_fetch_assoc($select_parola);
-            $parola_db = $utilizator['parola'];
-           
-                if($parola_db !== $parola){
-                    $hash = password_hash($parola, PASSWORD_DEFAULT);
-                    
-                    update('utilizatori',['nume'=>$nume, 'prenume'=>$prenume, 'username'=>$username, 'parola'=>$hash, 'rol'=>$rol, 'id_dep_utilizator'=>$id_dep_utilizator, 'status'=>$status], $id);
-                    header("location: utilizator.php?id=$id");
-                } else {
-                    update('utilizatori',['nume'=>$nume, 'prenume'=>$prenume, 'username'=>$username, 'parola'=>$parola, 'rol'=>$rol, 'id_dep_utilizator'=>$id_dep_utilizator, 'status'=>$status], $id);
-                    header("location: utilizator.php?id=$id");
-                }
+            if(validare_input(['parola'=>['required'=>true, 'min'=>8, 'max'=>60, 'uppercase'=>true, 'lowercase'=>true,'caracter_special'=>true, 'numar'=>true]])){
+                $hash = password_hash($parola, PASSWORD_DEFAULT);
+                update('utilizatori',['nume'=>$nume, 'prenume'=>$prenume, 'username'=>$username, 'parola'=>$hash, 'rol'=>$rol, 'id_dep_utilizator'=>$id_dep_utilizator, 'status'=>$status], $id);
+                header("location: utilizator.php?id=$id");
+            }
+        } else {
+            update('utilizatori',['nume'=>$nume, 'prenume'=>$prenume, 'username'=>$username, 'parola'=>$parola_db, 'rol'=>$rol, 'id_dep_utilizator'=>$id_dep_utilizator, 'status'=>$status], $id);
+            header("location: utilizator.php?id=$id");
         }
+        
     }
 }
 
@@ -85,12 +83,14 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
     generare_input('text','nume', $utilizator);
     generare_input('text','prenume', $utilizator);
     generare_input('text','username', $utilizator);
-    generare_input('password','parola', $utilizator);
-    
-if($_SESSION['rol']=='admin'):
+?>
+    <label for="parola">PAROLA</label><br>
+    <input type="password" name="parola"><br>
+
+<?php if($_SESSION['rol']=='admin'):
 //input DEPARTAMENT
     $id_dep = $utilizator['id_dep_utilizator'];
-    $query = "SELECT * FROM departamente WHERE id_dep=$id_dep";
+    $query = "SELECT * FROM departamente WHERE id_dep='$id_dep'";
     $select_departamente = mysqli_query($connection, $query);
     $departament = mysqli_fetch_assoc($select_departamente);
     $nume_departament = $departament['nume_dep'];
