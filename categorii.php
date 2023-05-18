@@ -22,7 +22,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
     $nume_dep = $departament['nume_dep'];
     $nume_cat = $_POST['categorie'];
     $data = $_POST['data'];
-    if(strtotime($data) > $_SERVER['REQUEST_TIME']){
+    if(!isset($data) || empty($data)){
+        $_POST['errors']['data'] = "Trebuie sa selectati o data";
+    } elseif(strtotime($data) > $_SERVER['REQUEST_TIME']){
         $_POST['errors']['data'] = "Nu puteti adauga activitati in viitor";
     } elseif(strtotime($data)<$data_minus_2sapt) {
         $_POST['errors']['data'] = "Nu puteti adauga activitati mai in urma cu 2 sapt";
