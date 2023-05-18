@@ -2,7 +2,9 @@
 session_start();
 require_once("includes/db.inc.php");
 require_once("includes/functions.inc.php");
-
+if(!isset($_SESSION['id'])){
+    header("location: login.php");
+}
 if($_SESSION['rol']==='admin'){
     $query = "SELECT * FROM utilizatori";
     $utilizatori = mysqli_query($connection, $query);
