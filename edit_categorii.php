@@ -44,6 +44,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
             while($activitati = mysqli_fetch_assoc($select_activitati)){
                 $ore_lucrate_zi=$ore_lucrate_zi + $activitati['ore_lucrate'];
             }
+            if($data == $activitate['data_act']){
+                $ore_lucrate_zi = $ore_lucrate_zi - $activitate['ore_lucrate'];
+            }    
+            
             if($ore_lucrate_zi < 8 && $ore_lucrate_zi + $ore_lucrate <=8){
                 $query = "UPDATE activitati SET id=$id, nume_dep='$nume_dep', nume_cat='$nume_cat', data_act='$data', ore_lucrate=$ore_lucrate, ora_log='$ora_log' WHERE id_act= '$id_act'";
                 $result = mysqli_query($connection, $query);
