@@ -27,17 +27,16 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Departamente</title>
-</head>
-<body>
-    <?php require("templates/header.php")?>
-    <table>
+
+<?php require("templates/header.php"); ?>
+<?php require("templates/navigation.php"); ?>
+    <!-- Page Content -->
+    <div class="container-fluid">
+        <div class="row">
+        <!-- Left Page Column -->
+        <div class="col-md-8">
+                <h1 class="page-header">Departamente</h1>     
+    <table class="table table-bordered table-hover">
         <tr>
             <th>Id</th>
             <th>Denumire</th>
@@ -63,19 +62,28 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
     }
 ?>
         <tr>
-            <th><?php echo $departament['id_dep']?></th>
-            <th><?php echo $departament['nume_dep'] ?></th>
-            <th><?php echo $nr_utilizatori?></th>
-            <th><?php echo $ore_lucrate_total ?></th>
-            <th><a href="departamente.php?delete=<?php echo $id_dep?>" onClick="javascript: return confirm('Esti sigur ca vrei sa stergi?')"><button name="delete">Sterge</button></a></th>
+            <td><?php echo $departament['id_dep']?></td>
+            <td><?php echo $departament['nume_dep'] ?></td>
+            <td><?php echo $nr_utilizatori?></td>
+            <td><?php echo $ore_lucrate_total ?></td>
+            <td><a href="departamente.php?delete=<?php echo $id_dep?>" onClick="javascript: return confirm('Esti sigur ca vrei sa stergi?')"><button class="btn btn-danger" name="delete">Sterge</button></a></td>
         </tr>
         <?php endforeach?>
     </table>
-    <hr>
+    </div>
+    <div class="col-md-4">
+
+<h3 class="page-header">Adauga un departament nou</h3>
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
-        <label style="font-weight:bold" for="nume_dep">Departament nou</label><br>
-        <input type="text" name="nume_dep" placeholder="Introduceti nume departament">
-        <input type="submit" name="adauga" value="Adauga departament">
-    </form>
-</body>
-</html>
+        <div class="form-group">
+            <label style="font-weight:bold" for="nume_dep">Departament nou</label><br>
+            <input autofocus required title="Denumirea departamentului" class="form-control" type="text" name="nume_dep" placeholder="Introduceti nume departament">
+        </div>
+        <button class="btn btn-primary" type="submit" name="adauga">Adauga departament</button>
+        </form>
+    </div>
+        <!-- /.row -->
+        </div>
+    <!-- /.container -->
+
+        <?php require("templates/footer.php"); ?>

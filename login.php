@@ -37,24 +37,15 @@ if($_SERVER["REQUEST_METHOD"]=='POST' && isset($_POST['submit'])){
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <?php require('templates/header.php') ?>
-    <h3 style="text-align:center">Log in </h3>
+<?php require("templates/header.php"); ?>
+<h3 class="page-header text-center">Log in </h3>
     <div style="justify-content:center; display:flex">
+        
         <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
-            <?php generare_input('text','username',null)?>
+            <div class="form-group"><?php generare_input('text','username',null)?></div>
+            <div class="form-group"><?php generare_input('password','parola',null)?></div>
             <br>
-            <?php generare_input('password','parola',null)?>
-            <br>
-            <input type="submit" name="submit" value="login">
+            <button class="btn btn-success" type="submit" name="submit">Login</button>
         </form>
     </div>
 </body>
