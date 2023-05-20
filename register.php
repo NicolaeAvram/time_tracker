@@ -34,29 +34,23 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit'])){
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>Inregistrare</title>
-</head>
-<body >
-<?php require('templates/header.php'); ?>
-<h1 style="text-align:center">Inregistrare utilizatori</h1>    
-<div style="justify-content:center; display:flex">
-    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
-    <?php 
-    generare_input('text','nume',null);
-    generare_input('text','prenume',null);
-    generare_input('text','username',null);
-    generare_input('password','parola',null);
-    generare_input('password','repeta_parola',null);
-    ?>
-        <br>
-        <input type="submit" name="submit" value="Inregistreaza">
-    </form>
+<?php require("templates/header.php"); ?>
+<?php require("templates/navigation.php"); ?>
+    <!-- Page Content -->
+<div class="container-fluid">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-offset-5">
+        <h1 class="page-header">Inregistrare utilizatori</h1>    
+        <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
+            <div class="form-group"><?php generare_input('text','nume',null);?></div>
+            <div class="form-group"><?php generare_input('text','prenume',null);?></div>
+            <div class="form-group"><?php generare_input('text','username',null);?></div>
+            <div class="form-group"><?php generare_input('password','parola',null);?></div>
+            <div class="form-group"><?php generare_input('password','repeta_parola',null);?></div>
+            <br>
+            <button class="btn btn-primary" type="submit" name="submit">Inregistreaza</button>
+        </form>
+        </div>
+    </div>
 </div>
-</body>
-</html>
+<?php require("templates/footer.php"); ?>

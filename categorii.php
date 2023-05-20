@@ -66,18 +66,17 @@ $result = mysqli_query($connection, $query);
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selectare categorie</title>
-</head>
-<body>
-    <?php require('templates/header.php');?>
-    <h3>Activitatile disponibile din departamentul: <?php echo $departament['nume_dep']?></h3>
+
+<?php require("templates/header.php"); ?>
+<?php require("templates/navigation.php"); ?>
+    <!-- Page Content -->
+    <div class="container-fluid">
+        <div class="row">
+        <!-- Left Page Column -->
+        <div class="col-md-8">
+    <h3 class="page-header">Activitatile disponibile din departamentul <?php echo $departament['nume_dep']?></h3>
         <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
+            <div class="form-group">
             <?php show_error('query')?>
             <input type="text" name="id_dep" value="<?php echo $departament['id_dep']?>" hidden>
             <label for="categorie">Selecteaza activitatea</label><br>
@@ -86,53 +85,63 @@ $result = mysqli_query($connection, $query);
             while($categorie = mysqli_fetch_assoc($select_cat)):?>                
                 <option value="<?php echo $categorie['nume_cat']?>"><?php echo $categorie['nume_cat']?></option>
             <?php endwhile?>
-            </select><br>
-
+            </select>
+            </div>
+            <div class="form-group">
             <label for="data">Introdu data</label><br>
             <input type="date" name="data"><br>
             <?php show_error('data')?>
+            </div>
+            <div class="form-group">
             <label for="ore">Introdu nr. de ore</label><br>
             <input type="number" name="ore"><br>
             <?php show_error('ore')?>
-            <button type="submit" name="submit">Inregistreaza</button>
+            </div>
+            <button class="btn btn-primary" type="submit" name="submit">Inregistreaza</button>
         </form>
     <br>
     <hr>
-
+        <h3 class="page-header">Cele mai recente activitati introduse</h3>
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Nr. crt.</th>
+                <th>Nume activitate</th>
+                <th>Departament</th>
+                <th>Data</th>   
+                <th>Ore lucrate</th>
+            </tr>
+    <?php $i=1;  
+    while($activitati = mysqli_fetch_assoc($result)):
+    if(strtotime($activitati['ora_log'])>$_SESSION['logintime']):
+    ?>
+            
+            <tr>
+                <td><?php echo $i; $i++;?></td>
+                <td><?php echo $activitati['nume_cat']?></td>
+                <td><?php echo $activitati['nume_dep']?></td>
+                <td><?php echo $activitati['data_act']?></td>
+                <td><?php echo $activitati['ore_lucrate']?></td>
+            </tr>
+            
+        <?php endif; endwhile;?>
+        </table>
+    </div>
+    <!-- /.row -->
+    <div class="col-md-4">
 <?php if($id_dep == $_SESSION['id_dep_utilizator'] || $_SESSION['rol'] ==='admin'):?>
+    <h3 class="page-header">Introduceti o categorie noua in departamentul <?php echo $departament['nume_dep']?></h3>
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
-        <input type="text" name="id_dep" value="<?php echo $departament['id_dep']?>" hidden>
-        <label for="nume_cat">Introdu o categorie noua</label><br>
-        <input type="text" name="nume_cat"><br>
-        <button name="introdu">Introdu categorie</button>
+        <div class="form-group">
+            <input type="text" name="id_dep" value="<?php echo $departament['id_dep']?>" hidden>
+            <label for="nume_cat">Categorie noua</label><br>
+            <input type="text" name="nume_cat" autofocus required title="Denumirea categoriei"><br>
+        </div>
+        <button class="btn btn-info" name="introdu" >Introdu categorie</button>
     </form>
 <?php endif ?>
-    <br>
-    <hr>
-    <h3>Cele mai recente activitati introduse</h3>
-    <table style="text-align:center">
-        <tr>
-            <th>Nr. crt.</th>
-            <th>Nume activitate</th>
-            <th>Departament</th>
-            <th>Data</th>   
-            <th>Ore lucrate</th>
-        </tr>
-<?php $i=1;  
-while($activitati = mysqli_fetch_assoc($result)):
-if(strtotime($activitati['ora_log'])>$_SESSION['logintime']):
-?>
-        
-        <tr>
-            <td><?php echo $i; $i++;?></td>
-            <td><?php echo $activitati['nume_cat']?></td>
-            <td><?php echo $activitati['nume_dep']?></td>
-            <td><?php echo $activitati['data_act']?></td>
-            <td><?php echo $activitati['ore_lucrate']?></td>
-        </tr>
-        
-    <?php endif; endwhile;?>
-    </table>
+    </div>
+   
+</div>
+    <!-- /.container -->
 
-</body>
-</html>
+        <?php require("templates/footer.php"); ?>
