@@ -2,6 +2,8 @@
 session_start();
 require_once('includes/db.inc.php');
 require_once('includes/functions.inc.php');
+require_once("utils/logging.inc.php");
+event_logger();
 
 if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit'])){
     if(validare_input([
@@ -21,11 +23,14 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit'])){
         $rows = mysqli_num_rows($rezultat);
         if($rows >0){
             $_POST['errors']['username'] = "Utilizatorul a fost deja inregistrat";
+            error_logger('username', 'introducere_date');
         } else {
             $hash = password_hash($parola, PASSWORD_DEFAULT);
-            if(create('utilizatori',['nume','prenume','username','parola'],
-            [$nume,$prenume,$username,$hash])){
+            if(create('utilizatori',['nume','prenume','username','parola'],[$nume,$prenume,$username,$hash])){
                 echo "Utilizatorul a fost creat cu succes";
+            } else {
+                $_POST['errors']['username'] = "Utilizatorul nu a putut fi creat";
+                error_logger('create', 'query');  
             }
         }
     }    

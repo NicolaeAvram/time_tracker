@@ -1,7 +1,9 @@
 <?php
+session_start();
 require_once('includes/db.inc.php');
 require_once("includes/functions.inc.php");
-session_start();
+require_once("utils/logging.inc.php");
+event_logger();
 
 if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['id'])){
     if(isset($_GET['id']) && !empty($_GET['id'])){
@@ -26,10 +28,22 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['submit'] )){
         $nume = $_POST['nume'];
         $prenume = $_POST['prenume'];
         $username = $_POST['username'];
+        $user_image = $_FILES['user_image']['name'];
+        $user_image_tmp = $_FILES['user_image']['tmp_name'];
+        var_dump($user_image);
+        var_dump($user_image_tmp);
         $parola = $_POST['parola'];
         $rol = $_POST['rol'];
         $status = $_POST['status'];
         $id_dep_utilizator = $_POST['departament'];
+        move_uploaded_file($user_image_tmp, "images/$user_image");
+            if(empty($user_image)){
+                $query = "SELECT * FROM utilizatori WHERE id = $id";
+                $select_image = mysqli_query($connection, $query);
+                while($row = mysqli_fetch_assoc($select_image)){
+                    $user_image = $row['user_image'];
+                }
+            }
         //verificare parola
         $query_parola = "SELECT parola FROM utilizatori WHERE id = '$id'";
         $select_parola = mysqli_query($connection, $query_parola);
@@ -38,14 +52,16 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['submit'] )){
         if(!empty($parola)){
             if(validare_input(['parola'=>['required'=>true, 'min'=>8, 'max'=>60, 'uppercase'=>true, 'lowercase'=>true,'caracter_special'=>true, 'numar'=>true]])){
                 $hash = password_hash($parola, PASSWORD_DEFAULT);
-                update('utilizatori',['nume'=>$nume, 'prenume'=>$prenume, 'username'=>$username, 'parola'=>$hash, 'rol'=>$rol, 'id_dep_utilizator'=>$id_dep_utilizator, 'status'=>$status], $id);
+                update('utilizatori',['nume'=>$nume, 'prenume'=>$prenume, 'username'=>$username, 'parola'=>$hash, 'user_image'=>$user_image, 'rol'=>$rol, 'id_dep_utilizator'=>$id_dep_utilizator, 'status'=>$status], $id);
                 header("location: utilizator.php?id=$id");
+            } else {
+                $_POST['errors']['update'] = "Utilizatorul nu a fost updatat";
+                error_logger('update', 'query');
             }
         } else {
-            update('utilizatori',['nume'=>$nume, 'prenume'=>$prenume, 'username'=>$username, 'parola'=>$parola_db, 'rol'=>$rol, 'id_dep_utilizator'=>$id_dep_utilizator, 'status'=>$status], $id);
+            update('utilizatori',['nume'=>$nume, 'prenume'=>$prenume, 'username'=>$username, 'parola'=>$parola_db, 'user_image'=>$user_image,'rol'=>$rol, 'id_dep_utilizator'=>$id_dep_utilizator, 'status'=>$status], $id);
             header("location: utilizator.php?id=$id");
         }
-        
     }
 }
 
@@ -61,6 +77,7 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
         header("location: utilizator.php?id=$id");
     } else {
         $_POST['errors']['delete'] = "Departamentul nu a putut fi sters";
+        error_logger('delete', 'query');
     }
 }
 
@@ -73,11 +90,16 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
         <div class="row">
             <div class="col-md-4">
             <h1 class="page-header">Date personale</h1>
-                <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">   
+                <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>" enctype="multipart/form-data">  
+                    <?php show_error('update')?> 
                     <input type="number" name="id" value="<?php echo $utilizator['id']?>" hidden> 
                     <div class="form-group"><?php generare_input('text','nume', $utilizator);?></div>
                     <div class="form-group"><?php generare_input('text','prenume', $utilizator) ?></div>
                     <div class="form-group"><?php generare_input('text','username', $utilizator)?></div>
+                    <div>
+                        <label for="user_image">POZA</label><br>
+                        <input type="file" name="user_image"><br>
+                    </div>
                     <div>
                         <label for="parola">PAROLA</label><br>
                         <input type="password" name="parola"><br>
@@ -127,7 +149,7 @@ if($utilizator['rol'] == 'admin'){
                     <div>
                         <label for="status">STATUS</label><br>
                         <select name="status" id="status">    
-                                <option value="<?php echo $utilizator['status']?>"><?php echo $utilizator['status'] ?></option>
+                            <option value="<?php echo $utilizator['status']?>"><?php echo $utilizator['status'] ?></option>
 <?php 
 if($utilizator['status'] == 'activ'){
     echo "<option value='dezactiv'>dezactiv</option>";    
@@ -154,7 +176,7 @@ if($utilizator['status'] == 'activ'){
                         <th>Data</th>   
                         <th>Ore lucrate</th>
                         <th></th>
-                        <th></th>
+                        
                     </tr>
 <?php $i=1;  
 while($activitati = mysqli_fetch_assoc($result)):
@@ -168,8 +190,8 @@ while($activitati = mysqli_fetch_assoc($result)):
                         <td><?php echo $activitati['data_act']?></td>
                         <td><?php echo $activitati['ore_lucrate']?></td>
                         <?php if(strtotime($activitati['ora_log'])>$data_minus_2zile):?>
-                        <td><a href="edit_categorii.php?id_act=<?php echo $activitati['id_act']?>"><button name="edit">Modifica activitatea</button></a></td>
-                        <th><a href="utilizator.php?delete=<?php echo $activitati['id_act']?>" onClick="javascript: return confirm('Esti sigur ca vrei sa stergi?')"><button name="delete">Sterge activitatea</button></a></th>        
+                        <td><a href="edit_categorii.php?id_act=<?php echo $activitati['id_act']?>"><button class="btn btn-info" name="edit">Modifica activitatea</button></a>
+                        <a href="utilizator.php?delete=<?php echo $activitati['id_act']?>" onClick="javascript: return confirm('Esti sigur ca vrei sa stergi?')"><button class="btn btn-danger" name="delete">Sterge activitatea</button></a></td>        
 <?php show_error('delete')?>
         <?php endif?>
                             </tr>

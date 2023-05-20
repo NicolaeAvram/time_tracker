@@ -2,6 +2,9 @@
 session_start();
 require_once("includes/db.inc.php");
 require_once("includes/functions.inc.php");
+require_once("utils/logging.inc.php");
+event_logger();
+
 if(!isset($_SESSION['id'])){
     header("location: login.php");
 }
@@ -19,7 +22,8 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
         if(delete('utilizatori','id',$_GET['delete'])){
             header("location:index.php");
         } else{
-            $_POST['error']['id'] = "Utilizatorul nu a putut fi sters";
+            $_POST['error']['delete'] = "Utilizatorul nu a putut fi sters";
+            error_logger('delete','query');
         }
 }
 if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['select'])){
@@ -39,6 +43,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['select'])){
             <!-- Left Page Column -->
             <div class="col-md-8">
                 <h1 class="page-header">Angajati</h1>
+                <?php show_error('delete')?>
                 <table class="table table-bordered table-hover">
                     <tr>
                         <th>Nr.crt.</th>
@@ -47,6 +52,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['select'])){
                         <th>Prenume</th>        
                         <th>Rol</th>
                         <th>Angajat la</th>
+                        <th>Poza</th>
                         <th></th>
                     </tr>
 
@@ -58,6 +64,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['select'])){
     $query = "SELECT * FROM departamente WHERE id_dep='$id_dep'";
     $select_departamente = mysqli_query($connection, $query);
     $nume_departament = mysqli_fetch_assoc($select_departamente);
+    $user_image = $utilizator['user_image'];
     ?>
                         <td hidden><?php echo $utilizator['id']?></td>
                         <td><?php echo $i; $i++;?></td>
@@ -65,7 +72,8 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['select'])){
                         <td><?php echo $utilizator['nume']?></td>
                         <td><?php echo $utilizator['prenume']?></td>
                         <td><?php echo $utilizator['rol']?></td>
-                        <td><?php echo $nume_departament['nume_dep']?></td>      
+                        <td><?php echo $nume_departament['nume_dep']?></td>
+                        <td><img width='100' src='<?php echo "images/$user_image"?>' alt='image'></td>      
                         <td>
                             <a href="utilizator.php?id=<?php echo $utilizator['id']?>"><button class="btn btn-info" name="profile">User profile</button></a>
                             <a href="index.php?delete=<?php echo $utilizator['id']?>" onClick="javascript: return confirm('Esti sigur ca vrei sa stergi?')"><button class="btn btn-danger" name="delete">Sterge</button></a>
@@ -73,7 +81,6 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['select'])){
                         
                     </tr>
     <?php endforeach?>
-
                 </table>
             </div>
 

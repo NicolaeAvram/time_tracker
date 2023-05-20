@@ -2,6 +2,8 @@
 session_start();
 require_once("includes/db.inc.php");
 require_once("includes/functions.inc.php");
+require_once("utils/logging.inc.php");
+event_logger();
 
 if($_SERVER['REQUEST_METHOD'] == 'GET'){
     $id_act = $_GET['id_act'];
@@ -33,8 +35,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
         $data = $_POST['data_act'];
         if(strtotime($data) > $_SERVER['REQUEST_TIME']){
             $_POST['errors']['data'] = "Nu puteti adauga activitati in viitor";
+            error_logger('data','introducere_date');
         } elseif(strtotime($data)<$data_minus_2sapt) {
             $_POST['errors']['data'] = "Nu puteti adauga activitati mai in urma cu 2 sapt";
+            error_logger('data','introducere_date');
         } else {
             $ore_lucrate = $_POST['ore_lucrate'];
             $ora_log = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
@@ -54,36 +58,32 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
                 header("location: utilizator.php?id=$id");
             } elseif($ore_lucrate>8) {
                 $_POST['errors']['ore'] = "Nu puteti lucra mai mult de 8 ore de-o data";
+                error_logger('ore','introducere_date');
             } else {
                 $_POST['errors']['ore'] = "Nu puteti lucra mai mult de 8 ore intr-o zi. In data de ".$data." aveti lucrate deja ".$ore_lucrate_zi." ore.";   
+                error_logger('ore','introducere_date');
             }
         }
     } else {
         $_POST['errors']['departament'] = "Categoria aleasa trebuie sa fie din cadrul departamentului corespunzator";
+        error_logger('departament','introducere_date');
     }
 }
 
-
-
-
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modificare categorie</title>
-</head>
-<body>
-    <?php require('templates/header.php');?>
-    <h3>Ati selectat urmatoarea activitate:</h3>
+<?php require("templates/header.php"); ?>
+<?php require("templates/navigation.php"); ?>
+    <!-- Page Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+    <h3 class="page-header">Ati selectat urmatoarea activitate:</h3>
         <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
-        
+        <div class="form-group">
         <input type="text" name="id_act" value="<?php echo $activitate['id_act']?>" hidden>
         <label for="departament">NUME DEPARTAMENT</label><br>
-        <select name="departament" id="departament">
+        <select class="form-select" name="departament" id="departament">
             <option value="<?php echo $activitate['nume_dep']?>"><?php echo $activitate['nume_dep']?></option>
 <?php   
 $query = "SELECT * FROM departamente";
@@ -95,9 +95,10 @@ foreach($departamente as $departament):
         </select>
         <?php show_error('departament')?>
         <br>
-
+        </div>
+        <div class="form-group">
         <label for="categorie">NUME CATEGORIE</label><br>
-        <select name="categorie" id="categorie">
+        <select class="form-select" name="categorie" id="categorie">
             <option value="<?php echo $activitate['nume_cat']?>"><?php echo $activitate['nume_cat']?></option>
 <?php   
 $query = "SELECT * FROM categorii";
@@ -109,17 +110,19 @@ foreach($categorii as $categorie):
 <?php endif; endforeach;?>
         </select>
         <br>
-<?php 
-generare_input('date','data_act',$activitate);
-show_error('data');
-generare_input('number','ore_lucrate',$activitate);
-show_error('ore');
-?>
-            <button type="submit" name="submit">Modifica activitatea</button>
+        </div>
+        <div class="form-group"><?php generare_input('date','data_act',$activitate) ?></div>
+        <div class="form-group"><?php generare_input('number','ore_lucrate',$activitate) ?></div>
+
+            <button class="btn btn-success" type="submit" name="submit">Modifica activitatea</button>
         </form>
-    <br>
-    <hr>
- 
+        </div>
+    </div>
+        <!-- /.row -->
+</div>
+    <!-- /.container -->
+
+        <?php require("templates/footer.php"); ?>
  
 </body>
 </html>
