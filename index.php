@@ -2,6 +2,9 @@
 session_start();
 require_once("includes/db.inc.php");
 require_once("includes/functions.inc.php");
+require_once("utils/logging.inc.php");
+event_logger();
+
 if(!isset($_SESSION['id'])){
     header("location: login.php");
 }
@@ -19,7 +22,8 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
         if(delete('utilizatori','id',$_GET['delete'])){
             header("location:index.php");
         } else{
-            $_POST['error']['id'] = "Utilizatorul nu a putut fi sters";
+            $_POST['error']['delete'] = "Utilizatorul nu a putut fi sters";
+            error_logger('delete','query');
         }
 }
 if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['select'])){
@@ -39,6 +43,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['select'])){
             <!-- Left Page Column -->
             <div class="col-md-8">
                 <h1 class="page-header">Angajati</h1>
+                <?php show_error('delete')?>
                 <table class="table table-bordered table-hover">
                     <tr>
                         <th>Nr.crt.</th>

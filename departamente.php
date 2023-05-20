@@ -2,6 +2,8 @@
 session_start();
 require_once("includes/db.inc.php");
 require_once("includes/functions.inc.php");
+require_once("utils/logging.inc.php");
+event_logger();
 
 $query = "SELECT * FROM departamente";
 $departamente = mysqli_query($connection, $query);
@@ -13,7 +15,8 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['adauga'])){
         if(create('departamente',['nume_dep'],[$_POST['nume_dep']])){
             header("location: departamente.php");
         } else {
-            $_POST['errors']['adauga'] = "Departamentul nu a fost adaugat";
+            $_POST['errors']['create'] = "Departamentul nu a fost adaugat";
+            error_logger('create','query');
         }
     }
 }
@@ -22,7 +25,8 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
     if(delete('departamente', 'id_dep', $_GET['delete'])){
         header("location: departamente.php");
     } else {
-        $_POST['errors']['id_dep'] = "Departamentul nu a putut fi sters";
+        $_POST['errors']['delete'] = "Departamentul nu a putut fi sters";
+        error_logger('delete','query');
     }
 }
 ?>
@@ -35,16 +39,17 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
         <div class="row">
         <!-- Left Page Column -->
         <div class="col-md-8">
-                <h1 class="page-header">Departamente</h1>     
-    <table class="table table-bordered table-hover">
-        <tr>
-            <th>Id</th>
-            <th>Denumire</th>
-            <th>Nr. utilizatori</th>
-            <th>Ore lucrate</th>
-            <th></th>
-        </tr>
-           
+        <h1 class="page-header">Departamente</h1>
+<?php show_error('delete')?>
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>Id</th>
+                    <th>Denumire</th>
+                    <th>Nr. utilizatori</th>
+                    <th>Ore lucrate</th>
+                    <th></th>
+                </tr>
+                
 <?php foreach($departamente as $departament):?>
 <?php 
     $id_dep = $departament['id_dep'];
@@ -74,6 +79,7 @@ if($_SERVER['REQUEST_METHOD']==='GET' && isset($_GET['delete'])){
     <div class="col-md-4">
 
 <h3 class="page-header">Adauga un departament nou</h3>
+    <?php show_error('create')?>
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>">
         <div class="form-group">
             <label style="font-weight:bold" for="nume_dep">Departament nou</label><br>

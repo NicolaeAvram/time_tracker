@@ -1,9 +1,9 @@
 <?php 
 
 session_start();
-if($_SESSION['username']){
-    
-}
+require_once("utils/logging.inc.php");
+event_logger();
+
 session_unset();
 session_destroy();
 

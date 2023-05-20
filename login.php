@@ -1,7 +1,9 @@
 <?php 
+session_start();
 require_once('includes/db.inc.php');
 require_once('includes/functions.inc.php');
-session_start();
+require_once("utils/logging.inc.php");
+event_logger();
 
 if($_SERVER["REQUEST_METHOD"]=='POST' && isset($_POST['submit'])){
     if(validare_input([
@@ -25,12 +27,15 @@ if($_SERVER["REQUEST_METHOD"]=='POST' && isset($_POST['submit'])){
                     header('location: index.php');
                 } else {
                     $_POST['errors']['username'] = "Utilizatorul este dezactivat";  
+                    error_logger('username', 'introducere_date');
                 }
             } else {
-                $_POST['errors']['parola'] = "Parola este gresita";    
+                $_POST['errors']['parola'] = "Parola este gresita";
+                error_logger('parola', 'introducere_date');    
             }
         } else {
             $_POST['errors']['username'] = "Utilizatorul nu exista";
+            error_logger('username', 'introducere_date');
         }
     }
 }

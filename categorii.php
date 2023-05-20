@@ -2,6 +2,8 @@
 session_start();
 require_once("includes/db.inc.php");
 require_once("includes/functions.inc.php");
+require_once("utils/logging.inc.php");
+event_logger();
 
 if($_SERVER['REQUEST_METHOD'] == 'GET'){
 $id_dep = $_GET['id_dep'];
@@ -24,10 +26,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
     $data = $_POST['data'];
     if(!isset($data) || empty($data)){
         $_POST['errors']['data'] = "Trebuie sa selectati o data";
+        error_logger('data','introducere_date');
     } elseif(strtotime($data) > $_SERVER['REQUEST_TIME']){
         $_POST['errors']['data'] = "Nu puteti adauga activitati in viitor";
+        error_logger('data','introducere_date');
     } elseif(strtotime($data)<$data_minus_2sapt) {
         $_POST['errors']['data'] = "Nu puteti adauga activitati mai in urma cu 2 sapt";
+        error_logger('data','introducere_date');
     } else {
         $ore_lucrate = $_POST['ore'];
         $ora_log = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
@@ -42,11 +47,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
                 header("location: categorii.php?id_dep=$id_dep");
             } else {
                 $_POST['errors']['query'] = "Nu s-a putut crea activitatea in db, desi activitatea exista";
+                error_logger('create','query');
             }
         } elseif($ore_lucrate>8) {
-            $_POST['errors']['query'] = "Nu puteti lucra mai mult de 8 ore de-o data";
+            $_POST['errors']['ore'] = "Nu puteti lucra mai mult de 8 ore de-o data";
+            error_logger('ore','introducere_date');
+
         } else{
-            $_POST['errors']['query'] = "Nu puteti lucra mai mult de 8 ore intr-o zi. In data de ".$data." aveti lucrate deja ".$ore_lucrate_zi." ore.";   
+            $_POST['errors']['ore'] = "Nu puteti lucra mai mult de 8 ore intr-o zi. In data de ".$data." aveti lucrate deja ".$ore_lucrate_zi." ore.";   
+            error_logger('ore','introducere_date');
+
         }
     }
 }
@@ -55,6 +65,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['introdu'])){
     $nume_cat = $_POST['nume_cat'];
     if(create('categorii', ['nume_cat','id_departament_cat'], [$nume_cat, $id_dep])){
         header("location: categorii.php?id_dep=$id_dep");
+    } else {
+        $_POST['errors']['query'] = "Nu s-a putut crea activitatea in db, desi activitatea exista";
+        error_logger('create','query');
     }
 }
 

@@ -1,0 +1,2 @@
+2023-05-20 18:14:52, request method: POST, mesajul de eroare: Nu puteti lucra mai mult de 8 ore intr-o zi. In data de 2023-05-19 aveti lucrate deja 4 ore., nume utilizator: Nick, etapa: introducere_date, informatia gresita: 7
+2023-05-20 18:14:59, request method: POST, mesajul de eroare: Trebuie sa selectati o data, nume utilizator: Nick, etapa: introducere_date, informatia gresita: 
