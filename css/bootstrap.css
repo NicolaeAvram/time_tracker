@@ -189,7 +189,6 @@ td,
 th {
   padding: 0;
 }
-/*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print {
   *,
   *:before,
@@ -6559,6 +6558,46 @@ button.close {
     display: none !important;
   }
 
+}
+
+.top-nav {
+  padding: 0 15px !important;
+}
+
+.top-nav>li {
+  float: left;
+  display: block;
+  }
+.top-nav>li>a {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+  line-height: 20px !important;
+  color: #999 !important;
+}
+
+.top-nav>li>a:hover,
+.top-nav>li>a:focus,
+.top-nav>.open>a,
+.top-nav>.open>a:hover,
+.top-nav>.open>a:focus {
+  color: #fff !important;
+  background-color: #000 !important;
+}
+
+.top-nav>.open>.dropdown-menu {
+  float: left;
+  position: absolute;
+  margin-top: 0;
+  border: 1px solid rgba(0,0,0,.15);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: #fff;
+  -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+
+.top-nav>.open>.dropdown-menu>li>a {
+  white-space: normal;
 }
 
 

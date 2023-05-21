@@ -12,8 +12,7 @@
                 <a class="navbar-brand" href="index.php">Acasa</a>
             </div>
                             <!-- Top Right Menu Items -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">            
             <ul class="nav navbar-right top-nav ">
                 <li class="dropdown">
                     <a href="#" class="navbar-brand" data-toggle="dropdown"><i class="fa fa-user"></i><?php echo '  '.$_SESSION['prenume'].' '.$_SESSION['nume'];?><b class="caret"></b></a>
