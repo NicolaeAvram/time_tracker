@@ -19,6 +19,7 @@ if($_SERVER["REQUEST_METHOD"]=='POST' && isset($_POST['submit'])){
                 if($utilizator['status'] =='activ'){
                     $_SESSION['id'] = $utilizator['id'];
                     $_SESSION['username'] = $utilizator['username'];
+                    $_SESSION['nume'] = $utilizator['nume'];
                     $_SESSION['prenume'] = $utilizator['prenume'];
                     $_SESSION['rol'] = $utilizator['rol'];
                     $_SESSION['id_dep_utilizator'] = $utilizator['id_dep_utilizator'];
