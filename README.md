@@ -1,6 +1,17 @@
 # time_tracker
-Este o aplicatie in care se pot inregistra useri/admini, care pot loga ore pt activitati(categorii) din cadrul unor departamente predefinite.
 
+**Time tracker** este o aplicatie de gestionare a programului de lucru a unei companii, in care se pot inregistra angajatii si pot loga ore pt activitati(categorii) din cadrul unor departamente predefinite.
+Angajatii pot avea rol de `admin` sau `utilizator`. 
+
+### Homepage
+![prinscreen](images/printscreen.jpg)
+
+### Introducere ore lucrate
+![prinscreen 2](images/printscreen(2).jpg)
+
+### *Database schema:*
+
+```
 CREATE TABLE "UTILIZATORI"
 (
   "ID" bigint, AUTO_INCREMENT,
@@ -37,3 +48,4 @@ CREATE TABLE "ACTIVITATI"
   "ORE_LUCRATE" int,
   "ORA_LOG" timestamp,
 );
+```
