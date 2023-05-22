@@ -13,9 +13,10 @@
             </div>
                             <!-- Top Right Menu Items -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav top-nav navbar-right ">
+            
+            <ul class="nav navbar-right top-nav ">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><?php echo $_SESSION['prenume'].' '.$_SESSION['nume'];?><b class="caret"></b></a>
+                    <a href="#" class="navbar-brand" data-toggle="dropdown"><i class="fa fa-user"></i><?php echo '  '.$_SESSION['prenume'].' '.$_SESSION['nume'];?><b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="utilizator.php?id=<?php echo $_SESSION['id'] ?>"><i class="fa fa-fw fa-user"></i> Profile</a>
