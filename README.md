@@ -5,7 +5,7 @@ Angajatii pot avea rol de `admin` sau `utilizator`.
 
 ![prinscreen](images/printscreen.jpg)
 
-###*Database schema:*
+### *Database schema:*
 
 ```
 CREATE TABLE "UTILIZATORI"
